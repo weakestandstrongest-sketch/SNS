@@ -1,0 +1,234 @@
+:root {
+  --bg: #0f1115;
+  --panel: #171a21;
+  --border: #262a33;
+  --text: #e6e8ec;
+  --muted: #8b919c;
+  --hover: #232733;
+  --topbar-height: 44px;
+  --header-height: 34px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font: 13px/1.4 system-ui, -apple-system, 'Segoe UI', 'Hiragino Sans', 'Yu Gothic UI', sans-serif;
+  user-select: none;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+/* ---- 上部バー ---- */
+
+.topbar {
+  flex: none;
+  height: var(--topbar-height);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 12px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+}
+
+.brand {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.toggles {
+  display: flex;
+  gap: 6px;
+  flex: 1;
+}
+
+.toggle {
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+
+.toggle::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: var(--muted);
+  vertical-align: 1px;
+}
+
+.toggle[aria-pressed='true'] {
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+.toggle[aria-pressed='true']::before {
+  background: var(--accent);
+}
+
+.topbar-button {
+  padding: 4px 10px;
+  border-radius: 6px;
+  color: var(--muted);
+}
+
+.topbar-button:hover,
+.toggle:hover {
+  background: var(--hover);
+  color: var(--text);
+}
+
+/* ---- 列 ---- */
+
+.columns {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  position: relative;
+}
+
+.column {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--border);
+}
+
+.column:last-of-type {
+  border-right: 0;
+}
+
+.column[hidden] {
+  display: none;
+}
+
+.column-header {
+  flex: none;
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 4px 0 10px;
+  background: var(--panel);
+  border-top: 2px solid var(--accent);
+}
+
+.dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.name {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  flex: none;
+}
+
+.actions button {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  color: var(--muted);
+}
+
+.actions button:hover:not(:disabled) {
+  background: var(--hover);
+  color: var(--text);
+}
+
+.actions button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.zoom {
+  min-width: 36px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.is-maximized .maximize {
+  color: var(--accent);
+}
+
+.loading-bar {
+  flex: none;
+  height: 2px;
+  background: transparent;
+}
+
+.is-loading .loading-bar {
+  background: linear-gradient(90deg, transparent, var(--accent), transparent) 0 0 / 40% 100% no-repeat;
+  animation: loading 1s linear infinite;
+}
+
+@keyframes loading {
+  from {
+    background-position: -40% 0;
+  }
+  to {
+    background-position: 140% 0;
+  }
+}
+
+/* SNS の画面はこの領域の上にメインプロセスが重ねて表示する */
+.column-body {
+  flex: 1;
+  min-height: 0;
+}
+
+.empty {
+  margin: auto;
+  color: var(--muted);
+}
+
+/* 動画の全画面表示中は上部バーと見出しを隠す */
+.is-fullscreen .topbar,
+.is-fullscreen .column-header,
+.is-fullscreen .loading-bar {
+  display: none;
+}
+
+/* 列が狭いときは倍率表示を省略 */
+@media (max-width: 1100px) {
+  .zoom {
+    display: none;
+  }
+}

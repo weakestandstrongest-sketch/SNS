@@ -1,0 +1,22 @@
+{
+  "name": "sns-crossover",
+  "productName": "SNS Crossover",
+  "version": "0.1.0",
+  "description": "YouTube・X・Instagram・Threads を1つのウィンドウに並べて流すデスクトップアプリ",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "build": {
+    "appId": "com.example.sns-crossover",
+    "files": ["src/**/*"],
+    "mac": { "target": "dmg" },
+    "win": { "target": "nsis" },
+    "linux": { "target": "AppImage" }
+  },
+  "devDependencies": {
+    "electron": "^44.7.0",
+    "electron-builder": "^26.15.3"
+  }
+}

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'" />
+    <title>SNS Crossover</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">SNS Crossover</div>
+      <nav class="toggles" id="toggles" aria-label="表示する SNS"></nav>
+      <button class="topbar-button" id="reload-all" title="すべての列を再読み込み">⟳ すべて更新</button>
+    </header>
+    <main class="columns" id="columns">
+      <p class="empty" id="empty" hidden>表示する SNS を上のボタンから選んでください</p>
+    </main>
+    <template id="column-template">
+      <section class="column">
+        <div class="column-header">
+          <span class="dot"></span>
+          <span class="name"></span>
+          <span class="actions">
+            <button data-action="back" title="戻る">←</button>
+            <button data-action="forward" title="進む">→</button>
+            <button data-action="reload" title="再読み込み">⟳</button>
+            <button data-action="home" title="ホームへ">⌂</button>
+            <button data-action="zoomOut" title="縮小">−</button>
+            <span class="zoom" title="表示倍率">100%</span>
+            <button data-action="zoomIn" title="拡大">＋</button>
+            <button data-action="maximize" class="maximize" title="この列だけ大きく表示">⤢</button>
+          </span>
+        </div>
+        <div class="loading-bar"></div>
+        <div class="column-body"></div>
+      </section>
+    </template>
+    <script src="renderer.js"></script>
+  </body>
+</html>
