@@ -1,0 +1,53 @@
+name: iOS
+
+on:
+  push:
+    paths:
+      - "ios/**"
+      - ".github/workflows/ios.yml"
+  workflow_dispatch:
+
+jobs:
+  simulator:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build for the iOS Simulator
+        run: |
+          xcodebuild -version
+          xcodebuild -project ios/SNSCrossover.xcodeproj -target SNSCrossover \
+            -configuration Debug -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO \
+            CODE_SIGNING_ALLOWED=NO SYMROOT="$PWD/build" build
+
+      - name: Launch in the Simulator and take screenshots
+        run: |
+          UDID=$(xcrun simctl list devices available -j | python3 -c '
+          import json, sys
+          devices = json.load(sys.stdin)["devices"]
+          for runtime in sorted(devices, reverse=True):
+              if "iOS" in runtime:
+                  for d in devices[runtime]:
+                      if d["name"].startswith("iPhone"):
+                          print(d["udid"]); sys.exit()')
+          echo "Simulator: $UDID"
+          xcrun simctl boot "$UDID"
+          xcrun simctl bootstatus "$UDID" -b
+          xcrun simctl install "$UDID" build/Debug-iphonesimulator/SNSCrossover.app
+          mkdir -p screenshots
+          shoot() {
+            name=$1; shift
+            xcrun simctl terminate "$UDID" io.github.weakestandstrongest.SNSCrossover 2>/dev/null || true
+            xcrun simctl launch "$UDID" io.github.weakestandstrongest.SNSCrossover "$@"
+            sleep 30
+            xcrun simctl io "$UDID" screenshot "screenshots/$name.png"
+          }
+          shoot 1-youtube-x -selected 0
+          shoot 2-instagram-threads -selected 1
+          shoot 3-custom-set -sets "youtube,x;instagram,threads;threads,youtube" -selected 2 -ratio 0.65
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ios-screenshots
+          path: screenshots/
