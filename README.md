@@ -1,6 +1,9 @@
 # SNS Crossover
 
-YouTube・X・Instagram・Threads を **1つのウィンドウに横並びで表示** して、それぞれのタイムラインを同時に流し見できるデスクトップアプリです。
+YouTube・X・Instagram・Threads を **1つの画面に並べて表示** して、それぞれのタイムラインを同時に流し見できるアプリです。
+
+- **パソコン版**（Windows / Mac / Linux）: 4 つを横並び
+- **iPhone 版**: 2 つを上下に並べ、組み合わせを切り替え（[下のほう](#iphone-版ios)）
 
 各列の中身は公式サイトそのものなので、API の制限や料金はかかりません。ログインも各列でふつうに行います。
 
@@ -48,9 +51,46 @@ npm start
 
 自分のパソコン用のインストーラーを作るときは `npm run dist`（`dist/` に出力）。
 
+## iPhone 版（`ios/`）
+
+iPhone では **2 画面（上下）** で表示します。横向きにすると左右に並びます。
+
+```
+┌───────────────────┐
+│ ● YouTube ▾  ‹ ⟳ ⌂ ⤢ │
+│   （YouTube）      │
+├────── ═══ ────────┤ ← ドラッグで大きさを変更
+│ ● X ▾        ‹ ⟳ ⌂ ⤢ │
+│   （X）            │
+├───────────────────┤
+│[YouTube＋X][Instagram＋Threads] [+]│ ← 組み合わせを切り替え
+└───────────────────┘
+```
+
+- 画面下のボタンで **組み合わせ（画面セット）を切り替え**。最初は「YouTube＋X」「Instagram＋Threads」
+- `+` で好きな組み合わせを追加。ボタンを長押しすると **組み合わせの変更・削除**
+- 各画面の名前（`YouTube ▾`）をタップすると、その画面の SNS をその場で変更
+- 真ん中の境目をドラッグして上下の大きさを変更、`⤢` で 1 画面だけ表示
+- 下に引っぱって更新、左端からスワイプで戻る
+- 切り替えても各 SNS の画面は読み込み直さず、見ていた位置のまま
+
+### iPhone に入れる方法
+
+iPhone アプリは Mac と Xcode が必要です。
+
+1. Mac に [Xcode](https://apps.apple.com/jp/app/xcode/id497799835) を入れる
+2. `ios/SNSCrossover.xcodeproj` を開く
+3. 左のプロジェクト → `SNSCrossover` ターゲット →「Signing & Capabilities」で **Team** に自分の Apple ID を選ぶ
+   （「Bundle Identifier が使えない」と出たら、末尾を自分だけの名前に変える）
+4. iPhone をケーブルでつなぎ、上部で自分の iPhone を選んで ▶ を押す
+5. 初回は iPhone の「設定 → 一般 → VPN とデバイス管理」で開発元を信頼する
+   （iOS 16 以降は「設定 → プライバシーとセキュリティ → デベロッパモード」もオンにする）
+
+無料の Apple ID だと **7 日ごとに Xcode から入れ直し** が必要です。Apple Developer Program（年 99 米ドル）に登録すると 1 年間使え、TestFlight で Mac なしでも入れられるようになります。
+
 ## SNS を増やす・変える
 
-`src/columns.js` の一覧に追加するだけで列が増えます。
+パソコン版は `src/columns.js` の一覧に追加するだけで列が増えます（iPhone 版は `ios/SNSCrossover/SNS.swift`）。
 
 ```js
 {
@@ -74,6 +114,7 @@ npm start
 | `src/main.js` | ウィンドウと各列の作成、リンクの振り分け、設定の保存 |
 | `src/index.html` / `renderer.js` / `styles.css` | 上部バーと各列の見出し |
 | `src/preload.js` | 見出しとメイン処理の橋渡し |
+| `ios/` | iPhone 版（SwiftUI ＋ WKWebView） |
 
 ## 注意
 
