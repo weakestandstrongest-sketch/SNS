@@ -46,6 +46,17 @@ jobs:
           shoot 2-instagram-threads -selected 1
           shoot 3-custom-set -sets "youtube,x;instagram,threads;threads,youtube" -selected 2 -ratio 0.65
 
+      - name: Print small previews to the log
+        if: always()
+        run: |
+          for f in screenshots/*.png; do
+            sips -s format jpeg -s formatOptions 60 -Z 700 "$f" --out "${f%.png}.jpg" >/dev/null
+            echo "=== PREVIEW $(basename "${f%.png}") ==="
+            base64 -i "${f%.png}.jpg" | tr -d '\n'
+            echo
+            echo "=== END ==="
+          done
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:
