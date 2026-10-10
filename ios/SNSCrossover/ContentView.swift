@@ -183,6 +183,7 @@ private struct PaneView: View {
                 .padding(.horizontal, 10)
                 .frame(maxHeight: .infinity)
             }
+            .tint(.primary)
 
             Spacer(minLength: 0)
 
@@ -232,16 +233,29 @@ private struct SetSwitcher: View {
 
     var body: some View {
         HStack(spacing: 6) {
-            ScrollView(.horizontal, showsIndicators: false) {
+            if sets.count <= 2 {
+                // 2 つ以下なら横幅いっぱいに並べる
                 HStack(spacing: 6) {
                     ForEach(sets.indices, id: \.self) { index in
-                        setButton(index: index)
+                        setButton(index: index).frame(maxWidth: .infinity)
                     }
                 }
-                .padding(.horizontal, 8)
-                // 2 つ以下のときは横幅いっぱいに並べる
-                .containerRelativeFrame(.horizontal, alignment: .leading) { width, _ in
-                    sets.count <= 2 ? width : max(width, CGFloat(sets.count) * 150)
+                .padding(.leading, 8)
+            } else {
+                // 3 つ以上なら横にスクロール
+                ScrollViewReader { proxy in
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 6) {
+                            ForEach(sets.indices, id: \.self) { index in
+                                setButton(index: index).id(index)
+                            }
+                        }
+                        .padding(.horizontal, 8)
+                    }
+                    .onAppear { proxy.scrollTo(selected, anchor: .center) }
+                    .onChange(of: selected) { _, index in
+                        withAnimation { proxy.scrollTo(index, anchor: .center) }
+                    }
                 }
             }
             Button(action: onAdd) {
@@ -275,8 +289,8 @@ private struct SetSwitcher: View {
             .font(.footnote.weight(isSelected ? .semibold : .regular))
             .lineLimit(1)
             .minimumScaleFactor(0.7)
-            .padding(.horizontal, 8)
-            .frame(maxWidth: .infinity, minHeight: 38)
+            .padding(.horizontal, 10)
+            .frame(maxWidth: sets.count <= 2 ? .infinity : nil, minHeight: 38)
             .background(
                 RoundedRectangle(cornerRadius: 10)
                     .fill(isSelected ? Color(.tertiarySystemFill) : Color.clear)

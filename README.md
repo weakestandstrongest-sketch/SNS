@@ -55,17 +55,9 @@ npm start
 
 iPhone では **2 画面（上下）** で表示します。横向きにすると左右に並びます。
 
-```
-┌───────────────────┐
-│ ● YouTube ▾  ‹ ⟳ ⌂ ⤢ │
-│   （YouTube）      │
-├────── ═══ ────────┤ ← ドラッグで大きさを変更
-│ ● X ▾        ‹ ⟳ ⌂ ⤢ │
-│   （X）            │
-├───────────────────┤
-│[YouTube＋X][Instagram＋Threads] [+]│ ← 組み合わせを切り替え
-└───────────────────┘
-```
+| YouTube＋X | Instagram＋Threads | 自分で作った組み合わせ |
+|---|---|---|
+| <img src="docs/screenshots/ios-1-youtube-x.png" width="220"> | <img src="docs/screenshots/ios-2-instagram-threads.png" width="220"> | <img src="docs/screenshots/ios-3-custom-set.png" width="220"> |
 
 - 画面下のボタンで **組み合わせ（画面セット）を切り替え**。最初は「YouTube＋X」「Instagram＋Threads」
 - `+` で好きな組み合わせを追加。ボタンを長押しすると **組み合わせの変更・削除**
