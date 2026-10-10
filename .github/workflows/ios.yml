@@ -7,9 +7,13 @@ on:
       - ".github/workflows/ios.yml"
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   simulator:
     runs-on: macos-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
 
@@ -46,16 +50,18 @@ jobs:
           shoot 2-instagram-threads -selected 1
           shoot 3-custom-set -sets "youtube,x;instagram,threads;threads,youtube" -selected 2 -ratio 0.65
 
-      - name: Print small previews to the log
-        if: always()
+      - name: Save screenshots to docs/screenshots (manual runs only)
+        if: github.event_name == 'workflow_dispatch'
         run: |
+          mkdir -p docs/screenshots
           for f in screenshots/*.png; do
-            sips -s format jpeg -s formatOptions 60 -Z 700 "$f" --out "${f%.png}.jpg" >/dev/null
-            echo "=== PREVIEW $(basename "${f%.png}") ==="
-            base64 -i "${f%.png}.jpg" | tr -d '\n'
-            echo
-            echo "=== END ==="
+            sips -Z 900 "$f" --out "docs/screenshots/ios-$(basename "$f")" >/dev/null
           done
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/screenshots
+          git commit -m "Update iOS screenshots" || exit 0
+          git push
 
       - uses: actions/upload-artifact@v4
         if: always()
